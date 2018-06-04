@@ -1140,7 +1140,77 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	类似于Java
 
 
+二.类和对象
+=================================================
+1. 类的定义和对象的构建
+	1.1 类只是一个模板，【不占用内存空间】，所以在定义类时，不能对成员变量进行初始化。只有创建对象后才会给成员变量分配内存。
+	1.2 C++中的类在定义结束后，需要加一个;号代表类定义结束。
+
+	例：
+	class Student {
+	public:
+		char *name;
+		int age;
+		float score;
+
+		void say() {
+		cout << name << ", age is " << age << ", score is " << score << endl;
+	};
 	
+	int main()
+	{
+		Student stu;
+		// Student *pStu = &stu;
+		Student *pStu = new Student;
+		pStu->name = "xp.chen";
+		pStu->age = 15;
+		pStu->score = 92.5f;
+		pStu->say();
+		delete pStu;
+		system("pause");
+		return 0;
+	}
+2. 类的成员函数最好在类体外声明
+	2.1 可以在类体中直接定义成员函数，也可以在类外定义，在类外定义时，需要在函数名前加上类名予以限定。
+	【成员函数必须在类体中作原型声明，然后在类外定义，也就是说类体的位置应在函数定义之前】
+	例：
+	class Student{
+	public:
+		//成员变量
+		char *name;
+		int age;
+		float score;
+		//成员函数
+		void say();  //函数声明
+	};
+	//函数定义
+	void Student::say(){
+		cout<<name<<"的年龄是"<<age<<"，成绩是"<<score<<endl;
+	}
+
+	2.2 在类体和类外定义的成员函数是有区别的：在类体中定义的成员函数会自动成为【内联函数】，在类体外则不会。内联函数一般不是期望的，它会将
+		函数调用处用函数体替代。因此【建议在类体内部对函数作声明，类体外部进行定义】。
+
+3.	C++类成员的访问权限
+	3.1 C++中的public, private, protected只能修饰类的成员，不能修饰类，与java/C#不同，C++中的类没有公共私有之分。
+	3.2 C++中成员变量大都是m_开头，这是一种编写习惯。
+	3.3 如果成员变量既不声明为private，又不声明为public, 则默认为private,这与java又不同。
+	3.4 C++中对象的大小只受成员变量影响，与成员函数没有关系。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	
 

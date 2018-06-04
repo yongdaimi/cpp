@@ -8,13 +8,10 @@ void func(char ch)
 	cout << "#1" << endl;
 }
 
-//void func(int ch)
-//{
-//	cout << "#2" << endl;
-//}
-
-
-
+void func(int ch)
+{
+	cout << "#2" << endl;
+}
 
 void func(long ch)
 {
