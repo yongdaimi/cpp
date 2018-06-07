@@ -1142,7 +1142,7 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 
 二.类和对象
 =================================================
-1. 类的定义和对象的构建
+1. 类和对象
 	1.1 类只是一个模板，【不占用内存空间】，所以在定义类时，不能对成员变量进行初始化。只有创建对象后才会给成员变量分配内存。
 	1.2 C++中的类在定义结束后，需要加一个;号代表类定义结束。
 
@@ -1196,6 +1196,147 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	3.2 C++中成员变量大都是m_开头，这是一种编写习惯。
 	3.3 如果成员变量既不声明为private，又不声明为public, 则默认为private,这与java又不同。
 	3.4 C++中对象的大小只受成员变量影响，与成员函数没有关系。
+
+4.	C++对象的内存模型
+	4.1 类是对象的模板，不占用内存空间。编译器会将成员变量和成员函数分开存储：分别为每个对象的成员变量分配内存，但是所有对象都共享同一段函数代码。
+	4.2 C++与C语言的编译方式不同。C语言的函数在编译时名字不变，或者只是简单的加一个下划线"_", C++中的函数在编译时会根据它所在的命名空间，所属的类，
+	以及它的参数列表等信息全新命名，形成一个新的函数名。
+	4.3 C++中的成员函数最终还是会被编译成与对象无关的全局函数。
+
+5.	C++中成员函数的调用【重点】
+	成员函数最终被编译成与对象无关的全局函数，如果函数体中没有成员变量，那问题就很简单，不用对函数做任何处理，直接调用即可。
+	如果成员函数中使用到了成员变量该怎么办呢？成员变量的作用域不是全局，不经任何处理就无法在函数内部访问。
+	【C++规定，编译成员函数时要额外添加一个参数，把当前对象的指针传递进去，通过指针来访问成员变量】
+	例：
+	假设 Demo 类有两个 int 型的成员变量，分别是 a 和 b，并且在成员函数 display() 中使用到了，如下所示：
+	void Demo::display(){
+		cout<<a<<endl;
+		cout<<b<<endl;
+	}
+	编译后代码：
+	void new_function_name(Demo * const p){
+		//通过指针p来访问a、b
+		cout<<p->a<<endl;
+		cout<<p->b<<endl;
+	}
+
+6. 构造函数
+	6.1 C++中的写法
+		class Student{
+		private:
+			char *m_name;
+			int m_age;
+			float m_score;
+		public:
+			//声明构造函数【注意！！！：C++中的构造函数必须是public的，否则创建对象时无法调用,不能有返回值，也不能有return语句】
+			Student(char *name, int age, float score);
+			//声明普通成员函数
+			void show();
+		};
+		//定义构造函数
+		Student::Student(char *name, int age, float score){
+			m_name = name;
+			m_age = age;
+			m_score = score;
+		}
+		//定义普通成员函数
+		void Student::show(){
+			cout<<m_name<<"的年龄是"<<m_age<<"，成绩是"<<m_score<<endl;
+		}
+		int main(){
+			//创建对象时向构造函数传参
+			Student stu("小明", 15, 92.5f);
+			stu.show();
+			//创建对象时向构造函数传参
+			Student *pstu = new Student("李华", 16, 96);
+			pstu -> show();
+			return 0;
+		}
+	6.2 C++中的构造函数与java中的基本类似，当一个类没有写明构造函数时，编译器也会为这个类自动生成构造函数，
+		不过C++中无参构造函数可以省略括号。如Student *pStu = new Student;
+
+	6.3 可以使用【参数初始化表】来简写构造函数，注意！仅限于构造函数使用。上面带参的Student构造函数可简写为：
+		Student::Student(char *name, int age, float score): m_name(name), m_age(age), m_score(score){
+			// 注意：！！！成员变量的赋值顺序仍然以类中声明的顺序为准，也就是说，即使m_age写在m_name前面，也优先赋值m_
+		} 
+		这种写法还可以初始化const 成员变量，且初始化const成员变量只能采用此方法：
+		class VLA{
+		private:
+			const int m_len;
+			int *m_arr;
+		public:
+			VLA(int len);
+		};
+		//必须使用参数初始化表来初始化 m_len
+		VLA::VLA(int len): m_len(len){
+			m_arr = new int[len];
+		}
+		// 绝对不可以写成下列样子, java中是可以的^_^
+		VLA::VLA(int len){
+			m_len = len;
+			m_arr = new int[len];
+		}
+7.	析构函数
+	7.1 C++中的写法。【注意：析构函数没有参数，不能被重载】
+		VLA::~VLA(){
+			delete[] m_arr;  //释放内存
+		}
+	7.2 C++中的new和delete分别用来分配和释放内存。用new分配内存时会自动调用构造函数，用delete删除时会自动调用析构函数。
+
+8.	C++中的this关键字
+	this 是一个const指针，实质是成员函数的一个形参，在调用成员函数时编译器会将对象的地址作为实参传递给this。
+
+9.	C++中的static 成员变量和static 成员函数
+	9.1	static 成员变量的用法和作用与java基本类似，不同的是C++中的静态成员变量必须在类声明的外部初始化。语法格式：
+		type class::name = value; // int Student::m_total = 0;
+		static 成员函数的用法与java相同也基本类似，都是需要在外部初始化。且只能访问静态成员变量。
+		声明：
+		static int m_total;  // static 放在开头
+		定义：
+		int Student::m_total = 0; // 成员变量定义不用加static
+		声明：
+		static int getTotal();
+		定义：
+		int Student::getTotal(){
+			return m_total; // 成员函数定义不用加static
+		}
+
+10.	C++中的const成员函数和const成员变量
+	10.1 与java 类似，const函数不能修改成员变量的值，const 函数的声明和定义分别为：
+		声明：
+		char *getName() const; // 注意：const放在最后
+		定义：
+		char * Student::getName() const
+		{
+			return m_name; // 注意函数签名与声明一致。
+		}
+	10.2 如果将一个对象声明为const, 则该对象只能访问const成员变量和const成员函数。
+		
+
+
+
+		
+
+
+
+		
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
 
 
 
