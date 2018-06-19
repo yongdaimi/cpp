@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "子类的构造函数仍然需要调用父类的构造函数", "子类的构造函数仍然需要调用父类的构造函数\子类的构造函数仍然需要调用父类的构造函数.vcxproj", "{45074363-BB7B-4C5B-B7BC-AC96F95B0332}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{45074363-BB7B-4C5B-B7BC-AC96F95B0332}.Debug|Win32.ActiveCfg = Debug|Win32
+		{45074363-BB7B-4C5B-B7BC-AC96F95B0332}.Debug|Win32.Build.0 = Debug|Win32
+		{45074363-BB7B-4C5B-B7BC-AC96F95B0332}.Release|Win32.ActiveCfg = Release|Win32
+		{45074363-BB7B-4C5B-B7BC-AC96F95B0332}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

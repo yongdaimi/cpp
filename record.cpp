@@ -1152,6 +1152,7 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 		char *name;
 		int age;
 		float score;
+		typedef int TNT; // 通过typedef定义的类型只能通过类来访问
 
 		void say() {
 		cout << name << ", age is " << age << ", score is " << score << endl;
@@ -1167,6 +1168,8 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 		pStu->score = 92.5f;
 		pStu->say();
 		delete pStu;
+
+		Student::TNT n = 10; // 类似于static 变量
 		system("pause");
 		return 0;
 	}
@@ -1311,6 +1314,313 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 			return m_name; // 注意函数签名与声明一致。
 		}
 	10.2 如果将一个对象声明为const, 则该对象只能访问const成员变量和const成员函数。
+
+11. 友元函数与友元类【非重点，可跳过】
+	11.1 ◆出现背景：
+			由于有访问修饰符的限制，对象可以访问public成员，只有本类的函数可以访问本类的private成员。
+		    【通过友元函数，可以使其它类的成员函数以及全局范围内的函数访问当前类的private成员】
+		
+		 ◆ 定义方式：
+			 函数需要在类中声明，并添加friend关键字。在类外定义的时候不必带上类名及friend关键字。
+			 class Student
+			 {
+				public:
+					friend void show(Student *pStu);
+			 };
+			 void show(Student *pstu){
+				cout<<pstu->m_name<<"的年龄是 "<<pstu->m_age<<"，成绩是 "<<pstu->m_score<<endl;
+			 }
+			 ★★★★★★ 注意！！！ ★★★★★★
+		     友元函数毕竟不是类的成员函数，在友元函数中仍然不能直接访问类的成员，必须借助对象，所以下列写法是错误的：
+		     成员函数在调用时因为会隐式的增加this指针，非成员函数则不会，因为需要通过参数传递对象
+			 void show(){
+				cout<<m_name<<"的年龄是 "<<m_age<<"，成绩是 "<<m_score<<endl;
+			 }
+
+12.	C++中class和struct的区别(C++中的struct既可以包含成员变量，也可以包含成员函数)
+
+13. C++ string类
+	13.1 使用string类需要包含头文件<string>。使用方法如：
+			string s2 = "c plus plus"; // 与C风格的字符串不同，string结尾没有结束符'\0'
+			string s4 (5, 's'); // 初始化由5个's'组成的字符串"sssss"
+		
+	13.2 可以调用string的c_str()方法，将C++的字符串类转换成C语言的const char *
+			string path = "D:\\demo.txt";
+			const char *c_str = path.c_str();
+	
+	13.3 访问字符串中的字符
+			for(int i=0,len=s.length(); i<len; i++){
+				cout<<s[i]<<" "; // 仍然可以使用[]来访问string中的每个字符
+			}
+
+	13.4 字符串拼接
+		可以使用"+"号运算符进行字符串拼接，C++中字符串拼接仅限于下列类型
+		string s1 = "first";
+		string s2 = "second";
+		char *s3 = "third";
+		char s4[] = "fourth";
+		char ch = '@';
+		
+		string s5 = s1 + s2;
+		string s6 = s1 + s3;
+		string s7 = s1 + s4;
+		string s8 = s1 + ch;
+	
+		【与Java不同，C++中的字符串不能直接与int类型进行"+"号拼接】
+		string a = "xp.chen";
+		int b = 36;
+		string c = a + b; // 这种写法是错误的！！！！
+
+
+三.C++中的引用
+=================================================
+1. 引用的基本概念
+	1.1 引用是C++对C语言的又一项扩充，可将其看做是数据的一个别名，类似于windows中的快捷方式，通过这个别名或者原来的名字都能找到这份数据。
+   
+	1.2 定义方式：
+		type &name = data; // type是被引用数据的类型，name是引用的名称，data是被引用的数据
+
+		例：
+		int a = 99;
+		int &b = a; // 有点类似于指针的定义，只是将*换成了&
+		b = 47; // 也可以通过引用修改原始变量中所存储的值，若不希望修改原始数据，可以添加const限制：
+				// const type &name = value; 或
+				// type const &name = value;
+	
+	1.3 引用作为函数参数
+		在定义和声明函数时，可以将函数的形参指定为引用的形式，这样在调用函数时就会将【实参和形参绑定在一起】，让它们都指向同一份数据。
+		如此一来，若在函数体中修改了形参的数据，实参数据也会跟着被修改。
+		----》例：swap(), 交换两个int变量的值
+	
+	1.4 引用作为函数返回值
+		如：
+		int &plus10(int &n){ // 定义方式有点类似于返回函数指针
+			n = n + 10;
+			return n;
+		}
+		/*
+		int &plus10(int &n){
+			int m = n + 10;
+			return m;		//像这种返回局部数据的引用是错误的！！！,因为函数调用完之后,局部数据就会被销毁，有可能下次使用数据就不存在了。
+		}*/
+
+		int main(){
+			int num1 = 10;
+			int num2 = plus10(num1);
+			cout<<num1<<" "<<num2<<endl;
+		}
+
+	1.5 注意要点
+		1.5.1 引用必须在定义的同时初始化，并且之后不能再引用其它数据。引用在定义时需要加&，在使用时不需要加&，不然就变成了取地址。
+		1.5.2 不能在函数中返回局部数据的引用。因为在函数调用后局部数据会被销毁，引用局部数据无意义。
+
+2.	引用和指针的区别
+	引用只是对指针做了简单的封装，其底层依然是通过指针实现的。引用占用的内存与指针占用的内存长度一样，32位4字节，64位8字节。
+	【引用注意事项】
+	2.1 引用必须在定义时初始化，且不能再指向其它数据；指针则无此限制，可不初始化，也可随意修改指向。
+
+	2.2 不能有const 引用！因为引用本来就不能改变指向，加上const多此一举
+		int a = 99;		
+		const int &b = a; // 正确。表明不允许修改引用的值
+		int const &b = a; // 正确。表明不允许修改引用的值
+		int &const b = a; // 错误。引用本来就不能改变指向
+
+	2.3 指针可以有多级，但引用只能有一级
+		int ***p; // 合法
+		int &&r;  // 不合法
+	
+	2.4 指针和引用的自增和自减意义不一样。指针使用++是指向下一份数据，引用表示指向的数据自身加+。
+	2.5 当引用作为函数参数时，如果在函数内部不会修改引用所绑定的数据。尽量为该引用添加const限制。
+		double volume(const double &len, const double &width, const double &hei){
+			return len*width*2 + len*hei*2 + width*hei*2;
+		}
+
+四.C++中的继承
+=================================================
+1.	继承的基本写法
+	class Student: public People, 
+	public 代表继承方式为公有,还可以有private, protected, 若不写，默认为【private】,则子类的成员变量和成员
+	函数默认也为private。 一般写成public
+	C++中的继承就是冒号，不是java中的extends
+
+2.	子类中的成员变量和成员函数会覆盖父类中的【同名成员变量和成员函数】,与java一致。
+	注意：这不是重载！只要子类中有同名函数，就一定会覆盖父类的所有同名函数，不管参数是否一样。
+	【在C++里面，重载仅限于同一个类的内层作用域里，父类和子类的同名函数不构成重载】
+
+	如果执意要调用父类的同名函数，可以按照下列写法：
+	Sub sub;
+	sub.func("http://www.baidu.com");
+	sub.func(true);
+	// sub.func();  // compile error, 子类无法调用父类中的同名函数
+	// sub.func(10);// compile error, 子类无法调用父类中的同名函数
+	sub.Parent::func(); // 调用父类中同名函数的正确写法。
+	sub.Parent::func(100);
+
+3. 继承时构造函数的写法
+	和java的写法类似，当调用子类的构造函数时，仍需要调用父类的构造函数。不同的是，C++里面只能通过参数初始化表
+	形式实现，不能也没有super关键字。
+	
+	Student::Student(char *name, int age, float score) :People(name, age), m_score(score){}
+	也可写成：
+	Student::Student(char *name, int age, float score): m_score(score), People(name, age){ }
+	不能像java一样写成
+	Student::Student(char *name, int age, float score){
+		People(name, age);
+		m_score = score;
+	}
+
+4.	继承时不需要再调用析构函数
+	4.1 当存在继承关系时，若子类未显式调用父类的构造函数，则子类默认会调用父类的无参构造函数
+	4.2 由于析构函数只会有一个，所以子类不需要显式调用父类的析构函数，编译器会在子类析构函数调用完毕后，自行调用父类构造函数。
+
+5. 多继承(不是重点)
+	5.1 语法：
+	class D: public A, private B, protected C{
+    //类D新增加的成员
+	}
+
+	构造函数：
+	D(形参列表): A(实参列表), B(实参列表), C(实参列表){
+    //其他操作
+	}
+	5.2 多继承时的命名冲突问题
+		如果两个或多个父类中存在相同的成员，若直接访问该成员，会产生命名冲突，编译器不知道使用哪个父类的成员，这时候需要在成员名字前
+		加上类各和域解析符::
+		class Derived: public BaseA, public BaseB{
+		public:
+			void display();
+		};
+		void Derived::display(){
+			BaseA::show();  //调用BaseA类的show()函数
+			BaseB::show();  //调用BaseB类的show()函数
+			cout<<"m_e = "<<m_e<<endl;
+		}
+
+6. 虽然为成员变量设定了访问修饰符，但仍然能通过指针获得对象中成员变量的值
+	class A{
+	public:
+		A(int a, int b, int c);
+	private:
+		int m_a;
+		int m_b;
+		int m_c;
+	};
+
+	A obj(10, 20, 30);
+    int a1 = *(int*)&obj; // a1 = 10
+    int b = *(int*)( (int)&obj + sizeof(int) ); // b = 20
+
+7. 虚继承和虚基类
+	7.1 虚继承用来解决的问题
+	例：若B，C继承于A， D继承于B，C则构成了菱形继承，若在A中存在一个成员变量m_a,那么在D类的对象方法中访问m_a,就
+		会发生错误，因为编译器不知道访问的是哪个m_a, B,C里面都继承了m_a, 为了解决多继承时的命名冲突问题，C++引入
+		了【虚继承】，使得子类中只会保留一份间接父类的成员。其目的在于让某个类做出声明，承诺愿意共享它的基类。
+
+		//间接基类A，由于它被承诺会被共享，也被称为【虚基类】
+		class A{
+		protected:
+			int m_a;
+		};
+		//直接基类B
+		class B: virtual public A{  //虚继承，【需要在继承方式前加上virtual 关键字】
+		protected:
+			int m_b;
+		};
+		//直接基类C
+		class C: virtual public A{  //虚继承
+		protected:
+			int m_c;
+		};
+		//派生类D
+		class D: public B, public C{
+		public:
+			void seta(int a){ m_a = a; }  //正确
+			void setb(int b){ m_b = b; }  //正确
+			void setc(int c){ m_c = c; }  //正确
+			void setd(int d){ m_d = d; }  //正确
+		private:
+			int m_d;
+		};
+
+	7.2 虚继承时构造函数的写法
+		以上面代码为例：
+		若A是虚基类，D是最终的派生类，则D的构造函数应写成：
+		D::D(int a, int b, int c, int d): A(a), B(90, b), C(100, c), m_d(d){}
+		
+		与普通继承时构造函数的写法不同，当有虚基类时，派生类的构造函数必须【手动调用虚基类的构造函数】。
+		
+		【略】：调用虚基类的构造函数有一定的必要性。若B，C都给公共的成员变量m_a赋值，编译器就不知道该采用哪个了，
+				所以C++标准强制规定必须由最终的派生类D来初始化m_a,且只采纳D传入的值，调用顺序上先调用虚基类的构造
+				函数，再按出现的顺序调用其它构造函数。
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
+
+
+
+			
+
 		
 
 

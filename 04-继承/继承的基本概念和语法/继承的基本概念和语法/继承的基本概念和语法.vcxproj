@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{056EC6C2-50DB-481B-BFCB-61A223F7E7A6}</ProjectGuid>
-    <RootNamespace>友元函数和友元类</RootNamespace>
+    <ProjectGuid>{8F3EF199-E472-4FD9-AADC-6D09A8F909E8}</ProjectGuid>
+    <RootNamespace>继承的基本概念和语法</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,7 +64,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

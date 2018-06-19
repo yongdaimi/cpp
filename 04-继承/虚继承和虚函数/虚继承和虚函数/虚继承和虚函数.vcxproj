@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{056EC6C2-50DB-481B-BFCB-61A223F7E7A6}</ProjectGuid>
-    <RootNamespace>友元函数和友元类</RootNamespace>
+    <ProjectGuid>{B8D1A2E4-0D90-40C6-A475-0DF3936559F6}</ProjectGuid>
+    <RootNamespace>虚继承和虚函数</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,6 +64,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="constructor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>

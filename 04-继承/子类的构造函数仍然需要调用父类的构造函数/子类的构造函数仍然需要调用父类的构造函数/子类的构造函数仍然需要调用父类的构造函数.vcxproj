@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{056EC6C2-50DB-481B-BFCB-61A223F7E7A6}</ProjectGuid>
-    <RootNamespace>友元函数和友元类</RootNamespace>
+    <ProjectGuid>{45074363-BB7B-4C5B-B7BC-AC96F95B0332}</ProjectGuid>
+    <RootNamespace>子类的构造函数仍然需要调用父类的构造函数</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,7 +64,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
