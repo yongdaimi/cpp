@@ -26,7 +26,7 @@ T1 Point<T1, T2>::getX() const
 }
 
 template<typename T1, typename T2>
-void Point<T1, T2>::setX(T1 x)
+void Point<T2, T2>::setX(T1 x)
 {
 	m_x = x;
 }
@@ -57,7 +57,6 @@ int main()
 	system("pause");
 	return 0;
 }
-
 
 
 
