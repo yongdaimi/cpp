@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C02D0F56-A553-4EE6-85CA-B632F0E2CF0B}</ProjectGuid>
-    <RootNamespace>测试项目</RootNamespace>
+    <ProjectGuid>{4D382DC9-E695-4A79-B53E-42F924FFECBA}</ProjectGuid>
+    <RootNamespace>My01多态的概念</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,9 +64,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="demo.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="pointAssignment.cpp" />
-    <ClCompile Include="referenceAssignment.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

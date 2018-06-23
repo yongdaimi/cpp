@@ -11,8 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C02D0F56-A553-4EE6-85CA-B632F0E2CF0B}</ProjectGuid>
-    <RootNamespace>测试项目</RootNamespace>
+    <ProjectGuid>{CD08A2FB-F011-4B52-B065-E6A27326015E}</ProjectGuid>
+    <RootNamespace>My07静态绑定和动态绑定</RootNamespace>
+    <ProjectName>07-静态绑定和动态绑定(了解)</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -65,8 +66,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="pointAssignment.cpp" />
-    <ClCompile Include="referenceAssignment.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

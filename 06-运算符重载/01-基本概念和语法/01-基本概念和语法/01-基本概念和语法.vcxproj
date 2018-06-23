@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C02D0F56-A553-4EE6-85CA-B632F0E2CF0B}</ProjectGuid>
-    <RootNamespace>测试项目</RootNamespace>
+    <ProjectGuid>{B2C0F993-FC07-4494-B49B-7D3B1AFAFE29}</ProjectGuid>
+    <RootNamespace>My01基本概念和语法</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -65,8 +65,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="pointAssignment.cpp" />
-    <ClCompile Include="referenceAssignment.cpp" />
+    <ClCompile Include="temp.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

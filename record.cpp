@@ -1021,6 +1021,11 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	标准错误。
 	2.4 cin和cout都是C++内置对象，而不是关键字。C++库定义了定义了大量的类，可以使用它们来创建对象，cout和cin分别是ostream和istream类的对象。
 	2.5 ">>" 是输入运算符, "<<" 是输出运算符
+	★★★★★★★★★★★
+	cout是ostream类的对象，cin是istream类的对象，C++标准库本身已经对左移运算符<<和右移运算符>>分别进行了重载
+	使其能够用于不同数据的输入输出(包括：bool、int、double、string、complex、ofstream、ifstream)
+	所以如果自己定义了一种新的数据类型，还想使用<<和>>输入输出，则必须重载<<或>>运算符。
+
 
 3.变量定义位置和布尔类型
 	3.1 C++中的变量可以声明在任意位置，如int i, 可以定义在任意位置。下列写法也被C++支持
@@ -1552,6 +1557,299 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 		【略】：调用虚基类的构造函数有一定的必要性。若B，C都给公共的成员变量m_a赋值，编译器就不知道该采用哪个了，
 				所以C++标准强制规定必须由最终的派生类D来初始化m_a,且只采纳D传入的值，调用顺序上先调用虚基类的构造
 				函数，再按出现的顺序调用其它构造函数。
+
+	7.3 将子类赋值给基类
+		7.3.1 子类对象赋值给基类对象
+				子类同名成员变量的值会替换父类同名成员变量的值，子类新增的成员变量会被丢弃。
+		7.3.2 子类指针赋值给父类指针
+				子类指针赋值给父类指针只会修改父类指针的指向
+				对象的指针必须要指向对象的起始位置
+		7.3.3 子类引用赋值给父类引用
+				与指针类似
+
+
+五.C++中的继承
+=================================================
+1.	虚函数和多态(C++里的虚函数是实现多态的必要手段)
+	1.1 虚函数的引入背景
+		例：
+		class People{
+		public:
+			People(char *name, int age);
+			void display();
+		protected:
+			char *m_name;
+			int m_age;
+		};
+		People::People(char *name, int age): m_name(name), m_age(age){}
+			void People::display(){
+			cout<<m_name<<"今年"<<m_age<<"岁了，是个无业游民。"<<endl;
+		}
+		//派生类Teacher
+		class Teacher: public People{
+		public:
+			Teacher(char *name, int age, int salary);
+			void display();
+		private:
+			int m_salary;
+		};
+		Teacher::Teacher(char *name, int age, int salary): People(name, age), m_salary(salary){}
+		void Teacher::display(){
+			cout<<m_name<<"今年"<<m_age<<"岁了，是一名教师，每月有"<<m_salary<<"元的收入。"<<endl;
+		}
+		int main(){
+			People *p = new People("王志刚", 23);
+			p -> display();		// 会打印People的display()方法
+			p = new Teacher("赵宏佳", 45, 8200);
+			p -> display();		// 仍然会打印People的display()方法
+			return 0;
+		}
+
+		上面例子说明，父类指针只能访问子类成员变量，却无法访问子类成员函数。为了解决此问题，使父类可以访问到
+		子类成员函数，引入了【虚函数】的概念
+	
+	1.2 虚函数的写法
+		只需要将父类的声明处改成：
+		class People{
+		public:
+			People(char *name, int age);
+			virtual void display(); // 在函数声明前加上virtual关键字，之后的函数实现可写可不写
+		
+		class Teacher: public People{
+		public:
+			Teacher(char *name, int age, int salary);
+			virtual void display(); // 【注意！！！子类同名函数的virtual关键字其实可以省略。但函数签名必须与父类保持一致。】
+		
+	1.3 虚函数实现的功能
+		加上virtual关键字之后，再次运行，此时父类指针终于可以调用子类的成员函数了。
+		有了虚函数，指针指向哪个类的对象，就调用哪个类的虚函数。
+		父类指针指向父类对象时就使用父类对象的成员(成员变量和成员函数)，指向子类对象时就使用子类对象的成员(
+		成员函数和成员函数)，此时的父类指针就有了多种形态，这就是【多态】
+		
+		C++利用虚函数实现了多态。其提供虚函数的唯一目的就是为了实现多态。
+
+2.	若用到了父类的析构函数，则最好把父类的析构函数声明为虚函数
+
+	在实际开发过程中，若使用了父类指针指向子类的对象，且在接下来的操作中，在子类的析构函数中做了内存释放操作，那么
+	必须将父类的析构函数声明为虚函数。否则，编译器将只会根据指针类型调用父类指针的析构函数，而不调用子类指针的析构
+	函数，这样会有内存泄露的风险。
+
+3.	纯虚函数和抽象类 (类似于java中的抽象函数和抽象类)
+	3.1 纯虚函数的引入背景
+		类似于java里面的抽象方法
+
+	3.2 纯虚函数的写法
+		virtual float area() = 0; // 纯虚函数没有函数体，只有函数声明，需要在虚函数结尾加上=0，表示此函数为纯虚函数，
+								  // 和java不同，不是用abstract来修饰的，包含纯虚函数的类就是【抽象类】
+	3.3 抽象类和纯虚函数的作用
+		与java中用法一致，都没有函数声明，都是作为基类，让子类来实现纯虚函数。子类必须实现纯虚函数才能被初始化。
+
+4.	C++利用虚函数表来实现多态
+	【内部实现】
+	在对象内部增加一个指针，该指针指向一个指针数组，该数组内部保存的是多个函数指针，每个函数指针指向该对象虚函数的入口地址。
+			  
+	【通过指针调用成员函数的具体步骤】
+	4.1 首先判断该函数是否是虚函数。如果是非虚函数，则根据指针类型找到该函数，即：指针是哪个类的类型，就调用哪个类的函数；
+		如果是虚函数，判断该指针指向的类是否含有同名函数，如果有，则调用指针指向的那个类的同名函数，否则则指向其父类的同
+		名函数。
+	4.2 当通过指针调用虚函数时，先根据指针找到 vtable(虚函数表) ，再根据 vtable  找到虚函数的入口地址。
+
+5.	typeid运算符
+
+	5.1 typeid的用法及作用
+		这个东西有点类似于java里的instance of 运算符，可用来获得一个变量或表达式的数据类型。
+		此运算符会把获取到的类型信息保存到一个type_info类型的对象里面，并返回该对象的引用。
+		例：
+		注：使用时需要包含#include <typeinfo>头文件
+		
+		//获取一个普通变量的类型信息
+		int n = 100;
+		const type_info &nInfo = typeid(n);
+		cout<<nInfo.name()<<endl; // 输出int
+
+		//获取一个对象的类型信息
+		Base obj;
+		const type_info &objInfo = typeid(obj)
+		cout<<objInfo.name()<<endl; // 输出class Base
+
+		//获取一个结构体的类型信息
+		const type_info &stuInfo = typeid(struct STU);
+		cout<<stuInfo.name()<<endl; // 输出struct STU
+		
+		// 可以用来做类型比较
+		typeid(obj1) == typeid(obj2)
+	
+	5.2 typeid的底层实现
+		之前提到，如果一个类中包含有虚函数，那么编译器在编译阶段会为这个类额外添加一个虚函数表，并在对
+		象内存中插入一个指针，指向这个虚函数表，同时还会添加额外类型信息，也就是type_info对象，编译器会
+		在这个虚函数表vttable的开头再插入一个指针，指向当前类对应的type_info对象。
+		
+		所以在程序运行阶段，如果我们想利用typeid获取类型信息时,编译器就能够通过现有的对象指针p找到虚函数
+		表指针vfptr, 继而通过vfptr找到type_info指针，进而取得类型信息。类似于：
+		**(p->vfptr-1)
+		
+
+6.	C++中的RTTI机制(运行时类型识别,参考java中的多态)
+	基本概念[Runtime type identification,运行时类型识别]
+		在程序运行后确定对象的类型信息的机制称为运行时类型识别（Run-Time Type Identification，RTTI）。
+		在 C++ 中，只有类中包含了虚函数时才会启用 RTTI 机制，其他所有情况都可以在编译阶段确定类型信息。
+
+六.运算符重载
+=================================================
+1.	基本概念和语法
+	1.1 运算符重载主要目的
+		使得程序书写更加人性化，易于阅读。运算符被重载后，其原有功能仍然		
+
+	1.2 运算符重载的本质
+		其本质就是定义一个函数，在函数体内部实现想要的功能，当用到该运算符时，编译器会自动调用这个函数。
+		也就是说，运算符重载是通过函数实现的，它本质上是函数重载
+	
+	1.3 运算符重载语法格式
+		返回值类型 operator 运算符名称 (形参表列){ // operator关键字专门用来定义重载运算符的函数
+			//TODO:								   // 可将operator 运算符名称看做是函数名
+		}										   // 运算符重载除了函数名是特定的格式，其它地方与普通函数一样
+		
+		例：
+		complex complex::operator+(const complex &A) const{
+			complex B;
+			B.m_real = this->m_real + A.m_real;
+			B.m_imag = this->m_imag + A.m_imag;
+			return B;
+		}
+
+	1.4 运算符重载注意事项	
+		1.4.1 当运算符重载函数作为类的成员函数时，其参数只能有一个。(以下均特指二元操作符)
+		1.4.2 当运算符重载函数作为全局函数时，其参数必须有两个。
+		1.4.3 当运算符重载函数是全局函数，那么两个参数要求最少有一个是对象，绝不能两个参数都是C++内置的数据类型！
+			  如果两个都是基本数据类型，就会出现下面这种情况：
+			  int operator + (int a,int b){				// 鬼知道表达式4+3的值到底是7还是1
+				return (a-b);
+			  }
+			  要求其中最少有一个是对象的目的在于：让编译器能够区分这是程序员自定义的运算符
+
+2.	C++重载[](下标运算符)
+	C++规定，下标运算符[]必须以成员函数形式进行重载，该重载函数在类中的声明格式如下：
+	返回值类型 & operator[ ] (参数);
+	或者：
+	const 返回值类型 & operator[ ] (参数) const;
+
+
+七.C++函数模板
+=================================================
+1.	函数模板
+	有点类似于java里面的泛型
+	写法：
+	template <typename 类型参数1 , typename 类型参数2 , ...> 返回值类型  函数名(形参列表){
+    //在函数体中可以使用类型参数
+	}
+
+	例如：
+	template<typename T> void Swap(T &a, T &b){ // 这里的typename关键字可以使用class替换，二者意义一样
+		T temp = a;
+		a = b;
+		b = temp;
+	}
+
+2.	类模板
+	基本写法：
+	★-------------》声明
+	template<typename 类型参数1 , typename 类型参数2 , …> class 类名{
+    //TODO:
+	};
+
+	例如：
+	template<typename T1, typename T2>  //这里不能有分号
+	class Point{
+	public:
+		Point(T1 x, T2 y): m_x(x), m_y(y){ }
+	public:
+		T1 getX() const;  //获取x坐标
+		void setX(T1 x);  //设置x坐标
+		T2 getY() const;  //获取y坐标
+		void setY(T2 y);  //设置y坐标
+	private:
+		T1 m_x;  //x坐标
+		T2 m_y;  //y坐标
+	};
+	
+	★-------------》实现
+	template<typename 类型参数1 , typename 类型参数2 , …>
+		返回值类型 类名<类型参数1 , 类型参数2, ...>::函数名(形参列表){
+		//TODO:
+	}
+	例如：
+	template<typename T1, typename T2>  //模板头
+	T1 Point<T1, T2>::getX() const /*函数头*/ {
+		return m_x;
+	}
+	有两点要注意!!!: 一是要加上模板头，二是函数声明不能像之前写成Point::getX(),而是Point<T1,T2>::getX()
+
+
+
+
+
+
+
+
+
+	
+	
+	
+
+
+
+
+	
+
+	
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+		
+
+
+
+
+
 
 	
 
