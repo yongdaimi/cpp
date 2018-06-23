@@ -18,10 +18,10 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="pointAssignment.cpp">
+    <ClCompile Include="test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="referenceAssignment.cpp">
+    <ClCompile Include="temp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
