@@ -1892,6 +1892,111 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 			cout<<"x="<<m_x<<" | y="<<m_y<<endl;
 		}
 
+3.	在多文件编程中，应把模板的定义和声明都放到头文件中
+	其根本原因在于：模板的实例化是由编译器完成的，而不是由链接器完成的，这可能会导致在链接期间找不到对应的实例。
+
+	不过，如果执意想把模板的声明和定义放在不同的文件中，也是可以的。【最好不要】
+	函数模板的话，可以将实例化定义放在模板定义所在的源文件，如：
+	template<typename T> void Swap(T &a, T &b){
+		T temp = a;
+		a = b;
+		b = temp;
+	}
+	template void Swap(double &a, double &b);  //显式实例化定义 ，注意此时需要省略尖括号
+	同样，类模板也可以采取此种做法。
+
+八.C++异常
+=================================================
+1.	基本语法：
+	try{
+		// 可能抛出异常的语句
+	}catch(exceptionType variable){
+		// 处理异常的语句
+	}
+
+	也可以写成：
+	注：这样的写法省略了variable,当出现异常时,只会将异常类型和catch所能处理的类型进行匹配，不会再传递异常数据
+	try{
+		// 可能抛出异常的语句
+	}catch(exceptionType){
+		// 处理异常的语句
+	}
+	
+	exceptionType是异常类型，它指明了当前的 catch 可以处理什么类型的异常；variable是一个变量，用来接收异常信息。
+	这个异常类型可以是：int、char、float、bool等基本类型，也可以是指针、数组、字符串、结构体、类等复合类型
+	例：
+	try{
+        throw "Unknown Exception";  //抛出异常
+        cout<<"This statement will not be executed."<<endl;
+    }catch(const char* &e){
+        cout<<e<<endl;
+    }
+	try{
+        func_outer();
+        cout<<"[3]This statement will not be executed."<<endl;
+    }catch(const char* &e){
+        cout<<e<<endl;
+    }
+
+	与java类似，也可以有多级catch
+	try{
+    //可能抛出异常的语句
+	}catch (exception_type_1 e){
+		//处理异常的语句
+	}catch (exception_type_2 e){
+		//处理异常的语句
+	}
+	//其他的catch
+	catch (exception_type_n e){
+		//处理异常的语句
+	}
+
+2.	C++中throw的用法和java中的区别
+	2.1 C++在方法体中同样可以使用throw关键字来抛出异常。
+	2.2 C++中如果要在方法名上抛出异常，写法为：
+		double func (char param) throw (int, char, exception); // 注意：不是java中的throws，C++中是throw
+	2.3 异常在函数的声明和定义中必须同时指明，必须保持一致，且子类虚函数必须与父类虚函数的声明保持一致。
+	2.4 这个东西在C++11中已经被抛弃了，所以不再建议使用。
+
+3.	C++中抛出的异常都是exception类的子类，所以如果不确定抛出什么异常，可以写成：
+	try{
+		//可能抛出异常的语句
+	}catch(exception &e){
+		//处理异常的语句
+	}
+	与java很类似，java中所有异常的父类是Exception类；
+	这个类上有一个what()函数，可以粗略告诉你这是什么异常。
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+	
+
+
+
+
+
+
+
 
 
 

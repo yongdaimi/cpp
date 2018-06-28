@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A0A81AB8-5B36-4D33-9E9C-ACB35CC484E6}</ProjectGuid>
-    <RootNamespace>My04让模板能够根据具体的类型调用不同的算法显示具体化</RootNamespace>
+    <ProjectGuid>{85CBD0F8-B4A2-4DE4-88EB-5AFEA727D837}</ProjectGuid>
+    <RootNamespace>My02throw关键字</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,9 +64,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="temp.cpp" />
-    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

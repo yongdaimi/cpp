@@ -72,7 +72,7 @@ void Point<char*, char*>::display() const
 }
 
 
-int main()
+int main02()
 {
 	(new Point<int, int>(10, 20))->display();
 	(new Point<int, char *>(10, "¶«¾­120¶È"))->display();
