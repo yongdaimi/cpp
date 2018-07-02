@@ -1967,6 +1967,162 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	与java很类似，java中所有异常的父类是Exception类；
 	这个类上有一个what()函数，可以粗略告诉你这是什么异常。
 
+九.C++面向对象进阶
+=================================================
+1.	拷贝构造函数
+	1.1 基本语法
+	声明：
+	Student(const Student &stu);  //拷贝构造函数（声明），注意：传递的必须是引用
+	定义：
+	Student::Student(const Student &stu){
+		this->m_name = stu.m_name;
+		this->m_age = stu.m_age;
+		this->m_score = stu.m_score;
+	   
+		cout<<"Copy constructor was called."<<endl;
+	}
+	正常情况下, 若不显式定义拷贝构造函数，编译器会自动生成一个默认的拷贝构造函数
+	只是相对简单，对新对象的成员变量进行一一赋值。
+	
+	1.2 引入背景
+	以之前写的自定义Array类为例：
+	该类内部持有一个指针，该指针指向一块内存空间，保存数组数据。若使用简单的浅拷贝
+	Array arr2 = arr1; 
+	则在修改arr2时, arr1的内容也会被修改，为保持两个对象所持有内存空间的独立性，使
+	对于某个对象的修改不会影响到另一个对象的内容，有必要显式定义拷贝构造函数，重新
+	为arr2开辟内存空间。将对象所持有的其它资源一并拷贝的行为叫做深拷贝。
+	
+	如果一个类拥有指针类型的成员变量，那么绝大部分需要深拷贝。
+
+2.	拷贝构造函数的调用时机
+	Student stu1("小明", 16, 90.5);  // 以传递进来的形参来初始化对象，调用普通构造函数	
+	Student stu2(stu1);  // 以其它对象数据来初始化对象，调用拷贝构造函数
+	Student stu3 = stu1; // 定义的同时并赋值，调用拷贝构造函数
+	
+	定义完成之后再赋值，不会再调用拷贝构造函数，如：
+	Array arr(10);
+	Array brr(29);
+	brr = arr;		// 不会再调用拷贝构造函数，若要规避浅拷贝带来的问题，需要重载=赋值运算符
+
+3.	转换构造函数
+	3.1	基本概念
+	将其它类型转换为当前类类型需要借助转换构造函数（Conversion constructor）。
+	转换构造函数也是一种构造函数，它遵循构造函数的一般规则。转换构造函数只有一个参数。
+
+	3.2 应用场景
+	Complex a(10.0, 20, 0);
+	a = (Complex)25.5; // Error, 将基本数据类型转换为类类型
+	转换构造函数可以自定义类型转换(将基本数据类型转换为类类型，将类类型转换为基本数据类型)
+	
+	3.3 基本语法
+	Complex(double real, double imag): m_real(real), m_imag(imag){ } // 普通构造函数
+    Complex(double real): m_real(real), m_imag(0.0){ }  //转换构造函数
+	a = 25.5;  //调用转换构造函数， real为25.5, imag为0.0
+	
+	这些构造函数可简写成：
+	Complex(double real = 0.0, double imag = 0.0): m_real(real), m_imag(imag){}
+
+4.	类型转换函数(类型转换运算符)
+	4.1 主要作用
+		与转换构造函数相反，该函数的作用是将当前类类型转换为其它类型，如将complex类型转换为double类型。
+		
+	4.2 基本语法
+		operator type(){ // type代表要转换的目标类型，因为目标类型就是返回类型，所以不需要返回值
+			//TODO:
+			return data;
+		}
+
+		public:
+		friend ostream & operator<<(ostream &out, Complex &c);
+		friend Complex operator+(const Complex &c1, const Complex &c2);
+		operator double() const { return m_real; }  //类型转换函数, double代表返回类型
+
+	注意：该函数只能以成员函数的形式出现，也就是只能出现在类中。
+
+5. 类型转换运算符(static_cast、dynamic_cast、const_cast和reinterpret_cast)
+	◆static_cast	
+		用于良性转换，一般不会导致意外发生，风险很低。
+	◆const_cast	
+		用于 const 与非 const、volatile 与非 volatile 之间的转换。
+	◆reinterpret_cast	
+		高度危险的转换，这种转换仅仅是对二进制位的重新解释，不会借助已有的转换规则对数据进行调整，但是可以实现最灵活的 C++ 类型转换。
+	◆dynamic_cast	
+		借助 RTTI，用于类型安全的向下转型（Downcasting）。
+	
+	例：
+	double scores = 95.5;
+	int n = static_cast<int>(scores);
+
+十. C++ I/O
+=================================================
+1.	与输出输出相关的类和对象
+	ifstream	// 支持对文件的输入操作<fstream>
+	ofstream	// 支持对文件的输出操作<fstream>
+	
+	iostream	// 包含了对输入输出流进行操作所需的基本信息。
+	fstream		// 用于用户管理的文件的I/O操作。
+	strstream   // 用于字符串流I/O。
+	stdiostream  // 用于混合使用C和C + +的I/O机制时，例如想将C程序转变为C++程序。
+	iomanip		 // 在使用格式化I/O时应包含此头文件
+
+
+2.	C++格式化输入输出
+	   int a;
+	   cout<<"input a:";
+	   cin>>a;
+	   cout<<"dec:"<<dec<<a<<endl;  //以十进制形式输出整数
+	   cout<<"hex:"<<hex<<a<<endl;  //以十六进制形式输出整数a
+	   cout<<"oct:"<<setbase(8)<<a<<endl;  //以八进制形式输出整数a
+	   char *pt="China";  //pt指向字符串"China"
+	   cout<<setw(10)<<pt<<endl;  //指定域宽为,输出字符串
+	   cout<<setfill('*')<<setw(10)<<pt<<endl;  //指定域宽,输出字符串,空白处以'*'填充
+	   double pi=22.0/7.0;  //计算pi值
+	   //按指数形式输出,8位小数
+	   cout<<setiosflags(ios::scientific)<<setprecision(8);
+	   cout<<"pi="<<pi<<endl;  //输出pi值
+	   cout<<"pi="<<setprecision(4)<<pi<<endl;  //改为位小数
+	   cout<<"pi="<<setiosflags(ios::fixed)<<pi<<endl;  //改为小数形式输出
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+	
+	
+
 
 
 

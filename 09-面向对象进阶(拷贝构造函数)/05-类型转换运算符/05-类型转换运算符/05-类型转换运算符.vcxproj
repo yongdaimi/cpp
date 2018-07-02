@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{85CBD0F8-B4A2-4DE4-88EB-5AFEA727D837}</ProjectGuid>
-    <RootNamespace>My02throw关键字</RootNamespace>
+    <ProjectGuid>{A9DADE4E-FA2F-49D0-AA56-ADB4646F5EB6}</ProjectGuid>
+    <RootNamespace>My05类型转换运算符</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
