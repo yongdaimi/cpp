@@ -2083,6 +2083,38 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	   cout<<"pi="<<setprecision(4)<<pi<<endl;  //改为位小数
 	   cout<<"pi="<<setiosflags(ios::fixed)<<pi<<endl;  //改为小数形式输出
 
+3.	cin和cout相关的成员函数
+	3.1 put() // 输出单个字符
+		ostream &ostream::put( char ch );	
+	
+	3.2 get() // 从输入设备获取一个字符
+		int istream::get();	
+		istream &istream::get( char &ch ); // 从输入设备获取一个字符，并赋值给ch
+		istream &istream::get( char *buffer, streamsize num );
+		/*上下两个函数的作用是从输入流中读取n-1个字符，赋给指定的字符数组(或字符指针指向的数组)，
+		如果在读取n-1个字符之前遇到指定的终止字符delim，则提前结束读取
+		如：
+		char ch[20];
+		cin.get(ch,10,'\\n');//指定换行符为终止字符，实际只读取9个字符，因为要读取的是一个
+		字符串，最后一个字符要存放\0
+		*/
+		istream &istream::get( char *buffer, streamsize num, char delim );
+
+	3.3	getline() //从输入设备获取一行字符，用法与get()类似，例：cin.getline(ch, 20, '\n');
+		istream &getline( char *buffer, streamsize num );
+		istream &getline( char *buffer, streamsize num, char delim );
+
+
+
+
+	
+
+
+	
+
+
+	
+
 
 
 
