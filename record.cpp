@@ -1755,7 +1755,7 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 
 2.	类模板
 	基本写法：
-	★-------------》声明
+	★-----------------------类模板的声明-----------------------------
 	template<typename 类型参数1 , typename 类型参数2 , …> class 类名{
     //TODO:
 	};
@@ -1775,7 +1775,7 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 		T2 m_y;  //y坐标
 	};
 	
-	★-------------》实现
+	★-----------------------类模板的实现-----------------------------
 	template<typename 类型参数1 , typename 类型参数2 , …>
 		返回值类型 类名<类型参数1 , 类型参数2, ...>::函数名(形参列表){
 		//TODO:
@@ -1791,6 +1791,76 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	Point<int, int> p1(10, 20);
 	Point<int, char*> p2(10, "东经180度");
 	Point<char*, char*> *p3 = new Point<char*, char*>("东经180度", "北纬210度");
+	★-----------------------类模板的实际意义-----------------------------
+	函数模板其实就是为了建立一个通用函数， 这个函数的形参类型不具体指定，而是用一个虚拟的类型来代表，通过
+	这种方式来减少类似于实现swap()函数功能的代码量。类模板的作用也是类似，通过建立一个通用的类型来减少代码量
+	举例：
+	我们要写一个比较类，类里面有两个私有成员，在类里有求私有成员中的最大值和最小值的两个公有成员，用来判断两个数的大小。
+	【不用类模板】
+	class Compare
+	{
+	public:
+		Compare(int a,int b)//构造函数，用于初始化
+		{
+			x = a;
+			y = b;
+		}
+		int max()//求较大值
+		{
+			return (x>y)?x:y;
+		}
+		int min()//求较小值
+		{
+			return (x<y)?x:y;
+		}
+	private:
+		int x;
+		int y;	
+	};
+	分析：只能用于比较整型数据的大小， 如果是浮点数，就不可以了。
+	
+	
+	【使用类模板】
+	template <class Type>
+	class compare
+	{
+	public:
+		compare(Type a,Type b)
+		{
+			x = a;
+			y = b;
+		}
+		Type max()
+		{
+			return (x>y)?x:y;
+		}
+		Type min()
+		{
+			return (x<y)?x:y;
+		}
+	private:
+		Type x;
+		Type y;
+	};
+	
+	在使用时：
+	int main(void)
+	{	
+	compare<int> C1(3,5);
+	cout<<"最大值："<<C1.max()<<endl;
+	cout<<"最小值："<<C1.min()<<endl;
+	
+	compare<float> C2(3.5,3.6);
+	cout<<"最大值："<<C2.max()<<endl;
+	cout<<"最小值："<<C2.min()<<endl;
+	
+	compare<char> C3('a','d');
+	cout<<"最大值："<<C3.max()<<endl;
+	cout<<"最小值："<<C3.min()<<endl;
+	return 0;
+	}
+
+	分析：如果使用了类模板，则只需要在使用时指明当前类模板所使用的类型，就可以用int,float,char替换之前定义好的类型，大大减少了代码量	
 
 3. 让模板能够根据不同的类型使用指定的算法(模板的显式具体化)
 	
