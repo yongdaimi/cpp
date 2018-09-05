@@ -1737,6 +1737,7 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 七.C++函数模板
 =================================================
 1.	函数模板
+	【基本概念】
 	有点类似于java里面的泛型
 	写法：
 	template <typename 类型参数1 , typename 类型参数2 , ...> 返回值类型  函数名(形参列表){
@@ -1752,6 +1753,17 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	注意点：
 	1.1 函数模板可以被重载。
 	1.2 当函数形参是引用类型时，数组不会转换为指针。
+	【函数模板的调用】
+	template<typename T>
+	T max(T t1, T t2)
+	{
+		return t1 > t2 ? t1 : t2;
+	}
+	调用：
+	cout << "max value is: " << max<int>(4, 25) << endl;
+	也可以写成：
+	cout << "max value is: " << max(4, 25) << endl;
+	PS：实际测试在Visual Studio 下加不加尖括号都可以。
 
 2.	类模板
 	基本写法：
@@ -1861,6 +1873,37 @@ sockaddr_in 代表描述一个IP地址和端口的结构体，两者没有必然
 	}
 
 	分析：如果使用了类模板，则只需要在使用时指明当前类模板所使用的类型，就可以用int,float,char替换之前定义好的类型，大大减少了代码量	
+
+	★-----------------------类模板中含有模板成员函数的写法-----------------------------
+	class A {
+	public:
+		template<typename T> void display(T var);
+	};
+
+	template<typename T>
+	void A::display(T var)
+	{
+		cout << "ret is: " << var + 5 << endl;
+	}
+	调用：
+	A *a = new A();
+	a->display<int>(15);
+	delete a;
+	
+	★-----------------------类模板中含有模板构造函数的写法-----------------------------
+	class A {
+	public:
+		template<typename T> A(T a);
+	};
+
+	template<typename T>
+	A::A(T a)
+	{
+		cout << a << endl;
+	}
+	调用：
+	A aa(12);
+	
 
 3. 让模板能够根据不同的类型使用指定的算法(模板的显式具体化)
 	
